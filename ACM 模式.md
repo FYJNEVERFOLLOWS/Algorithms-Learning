@@ -65,7 +65,9 @@ using namespace std;
 struct Listnode {
 	int val;
 	Listnode* next;
-	Listnode(int x) :val(x), next(NULL) {}
+	Listnode() : val(0), next(nullptr) {}
+	Listnode(int x) : val(x), next(nullptr) {}
+	Listnode(int x, Listnode *next) : val(x), next(next) {}
 };
  
 Listnode* createList(vector<int>& nums) {
@@ -82,7 +84,7 @@ Listnode* createList(vector<int>& nums) {
 	return head;
 }
  
-Listnode* merge(Listnode* l1, Listnode* l2) {
+Listnode* mergeList(Listnode* l1, Listnode* l2) {
 	Listnode* dummy = new Listnode(0);
 	Listnode* cur = dummy;
 	while (l1 != NULL && l2 != NULL) {
@@ -99,8 +101,21 @@ Listnode* merge(Listnode* l1, Listnode* l2) {
 	cur->next = l1 ? l1 : l2;
 	return dummy->next;
 }
- 
+
+Listnode* reverseList(Listnode* head) {
+	Listnode* prev = nullptr;
+	Listnode* cur = head;
+	while (cur) {
+		Listnode* temp = cur->next;
+		cur->next = prev;
+		prev = cur;
+		cur = temp;
+	}
+	return prev;
+}
+
 int main() {
+	// mergeList
 	int a;
 	vector<int> nums;
 	while (cin >> a) {
@@ -116,10 +131,62 @@ int main() {
 			break;
 	}
 	Listnode* head2 = createList(nums);
-	Listnode* ans = merge(head1, head2);
+	Listnode* ans = mergeList(head1, head2);
 	while (ans) {
 		cout << ans->val << " ";
 		ans = ans->next;
+	}
+
+	// reverseList
+	int a;
+	vector<int> nums;
+	while (cin >> a) {
+		nums.push_back(a);
+		if (cin.get() == '\n')
+			break;
+	}
+	Listnode* head = createList(nums);
+	Listnode* p = head->next;
+	while (p) {
+		printf("%d ", p->val);
+		p = p->next;
+	}
+	printf("\n");
+	Listnode* rhead = reverseList(head->next);
+	while (rhead) {
+		printf("%d ", rhead->val);
+		rhead = rhead->next;
+	}
+	printf("\n");
+
+	return 0;
+}
+```
+
+## DFS / BFS 模板题
+### 1、输入一张图，判断有几个连通块
+```cpp
+int dir[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // 上下左右四个方向
+bool vis[105][105]; // 标记是否已遍历
+int block_num = 0;
+
+void dfs(int i, int j) {
+	for (int k = 0; k < 4; k++) {
+		int x = i + dir[k][0], y = j + dir[k][1];
+		if (check(x, y) && !vis[x][y] && g) { // 判断没越界且没被遍历
+			dfs(x, y);
+		}
+	}
+}
+
+int main() {
+	for (int i = 0; i < m; i++) {
+		for (int j = 0; j < n; j++) {
+			if (g[i][j] == 1) {
+				dfs(i, j);
+				block_num++;
+			}
+		}
 	}
 	return 0;
 }
