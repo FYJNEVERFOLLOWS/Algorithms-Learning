@@ -166,14 +166,17 @@ int main() {
 ## DFS / BFS 模板题
 ### 1、输入一张图，判断有几个连通块
 ```cpp
-int dir[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}}; // 上下左右四个方向
-bool vis[105][105]; // 标记是否已遍历
 int block_num = 0;
+bool vis[105][105]; // 标记是否已遍历
+// 上下左右四个方向
+const int dx[4] = {-1, 1, 0, 0};
+const int dy[4] = {0, 0, -1, 1};
 
 void dfs(int i, int j) {
+	vis[i][j] = 1;
 	for (int k = 0; k < 4; k++) {
-		int x = i + dir[k][0], y = j + dir[k][1];
-		if (check(x, y) && !vis[x][y] && g) { // 判断没越界且没被遍历
+		int x = i + dx[k], y = j + dy[k];
+		if (check(x, y) && !vis[x][y] && g[x][y] == 1) { // 判断没越界且没被遍历
 			dfs(x, y);
 		}
 	}
@@ -182,12 +185,13 @@ void dfs(int i, int j) {
 int main() {
 	for (int i = 0; i < m; i++) {
 		for (int j = 0; j < n; j++) {
-			if (g[i][j] == 1) {
+			if (!vis[i][j] && g[i][j] == 1) {
 				dfs(i, j);
 				block_num++;
 			}
 		}
 	}
+	cout << block_num;
 	return 0;
 }
 ```
